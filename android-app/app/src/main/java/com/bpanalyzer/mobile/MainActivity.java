@@ -163,12 +163,38 @@ public class MainActivity extends Activity {
                 fila.setGravity(Gravity.CENTER_VERTICAL);
                 fila.setPadding(dp(14), dp(12), dp(14), dp(12));
                 fila.setBackgroundColor(Color.WHITE);
+                LinearLayout registro = new LinearLayout(this);
+                registro.setOrientation(LinearLayout.HORIZONTAL);
+                registro.setGravity(Gravity.CENTER_VERTICAL);
+                registro.setBackgroundColor(Color.WHITE);
+
+                LinearLayout.LayoutParams textoParametros = new LinearLayout.LayoutParams(0, dp(76), 1);
+                registro.addView(fila, textoParametros);
+
+                Button eliminar = new Button(this);
+                eliminar.setText("Eliminar");
+                eliminar.setTextColor(Color.rgb(180, 45, 45));
+                final int indiceRegistro = indice;
+                eliminar.setOnClickListener(v -> eliminarMedicion(indiceRegistro));
+                registro.addView(eliminar, new LinearLayout.LayoutParams(dp(100), dp(56)));
+
                 LinearLayout.LayoutParams parametros = new LinearLayout.LayoutParams(-1, dp(76));
                 parametros.setMargins(0, dp(8), 0, 0);
-                lista.addView(fila, parametros);
+                lista.addView(registro, parametros);
             } catch (JSONException ignorado) {
             }
         }
+    }
+
+    private void eliminarMedicion(int indice) {
+        JSONArray mediciones = cargarMediciones();
+        if (indice < 0 || indice >= mediciones.length()) {
+            return;
+        }
+        mediciones.remove(indice);
+        guardarMediciones(mediciones);
+        actualizarLista();
+        Toast.makeText(this, "Medición eliminada", Toast.LENGTH_SHORT).show();
     }
 
     private JSONArray cargarMediciones() {
